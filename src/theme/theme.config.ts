@@ -1,6 +1,21 @@
 import { Breakpoints, createTheme } from '@mui/material';
 
 const THEME = {
+  typography: {
+    fontFamily: `'proxima-nova', sans-serif`,
+    htmlFontSize: 16,
+    sectionTitle: {
+      fontSize: '1rem', // 16px
+      fontWeight: 600,
+      lineHeight: '1.25rem', // 20px
+    },
+    labelUppercase: {
+      fontSize: '0.75rem', // 12px
+      fontWeight: 700,
+      lineHeight: '1.125rem', // 18px
+      textTransform: 'uppercase',
+    },
+  },
   components: {
     MuiButtonBase: {
       defaultProps: {
@@ -46,25 +61,18 @@ const PALETTE = {
   },
   actions: {
     primary: {
-      text: '#FFFFFF',
-      default: '#4F46E5',
-      hover: '#7986CB',
-      active: '#22327C',
-      disabled: '#DDE2EE',
+      text: '#4F46E5',
+      default: 'transparent',
+      hover: '#C7D2FE',
+      active: '#4F46E5',
+      outline: '#C7D2FE',
     },
     secondary: {
-      text: '#374151',
-      default: '#F3F4F6',
-      hover: '#E4E7EC',
-      active: '#D1D5DB',
-      disabled: '#F9FAFB',
-    },
-    tertiary: {
-      text: '#374151',
+      text: '#64748B',
       default: 'transparent',
-      hover: '#F9FAFB',
-      active: '#F3F4F6',
-      disabled: 'transparent',
+      hover: '#E2E8F0',
+      active: '#64748B',
+      outline: '#E2E8F0',
     },
   },
 };
