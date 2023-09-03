@@ -23,9 +23,11 @@ declare module '@mui/material/styles' {
   }
   export interface Palette {
     actions: TactilePalette['actions'];
+    versions: TactilePalette['versions'];
     text: TactilePalette['text'];
   }
   export interface PaletteOptions {
     actions: TactilePalette['actions'];
+    versions: TactilePalette['versions'];
   }
 }

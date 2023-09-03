@@ -81,6 +81,26 @@ const PALETTE = {
       disabledText: '#CBD5E1',
     },
   },
+  versions: {
+    production: {
+      default: '#334155',
+      text: '#F8FAFC',
+      hover: '#64748B',
+      hoverText: '#F8FAFC',
+    },
+    test: {
+      default: '#64748B',
+      text: '#E2E8F0',
+      hover: '#64748B',
+      hoverText: '#CBD5E1',
+    },
+    warning: {
+      default: '#F59E0B',
+      text: '#F8FAFC',
+      hover: '#DB8804',
+      hoverText: '#F8FAFC',
+    },
+  },
 };
 
 export type Palette = typeof PALETTE;
