@@ -1,28 +1,33 @@
-import React, { ChangeEventHandler, FC } from 'react';
+import React, { ChangeEventHandler, FC, ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import { TextField as MuiTextField } from '@mui/material';
 
 export type TextFieldProps = {
   label: string;
+  value?: string;
+  defaultValue?: string | number;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   disabled?: boolean;
+  select?: boolean;
+  children?: ReactNode;
 };
 
-const StyledTextField = styled(MuiTextField)(({ theme }) => {
+export const StyledTextField = styled(MuiTextField)(({ theme }) => {
   return {
     '& .MuiInputBase-root': {
-      backgroundColor: `${theme.palette.background.secondary}`,
+      backgroundColor: `${theme.palette.background.tertiary}`,
       color: `${theme.palette.text.primary}`,
       border: `1px solid #E2E8F0`,
       borderRadius: 4,
+      width: '362px',
 
       '&.Mui-focused': {
-        backgroundColor: `${theme.palette.background.secondary}`,
+        backgroundColor: `${theme.palette.background.tertiary}`,
         borderColor: `${theme.palette.text.primary}`,
       },
 
       '&:hover': {
-        backgroundColor: `${theme.palette.background.secondary}`,
+        backgroundColor: `${theme.palette.background.tertiary}`,
       },
 
       '&::before, &::after': {
@@ -31,7 +36,7 @@ const StyledTextField = styled(MuiTextField)(({ theme }) => {
 
       '& input': {
         height: 38,
-        padding: `${theme.spacer.s} ${theme.spacer.ms} 0`,
+        padding: `${theme.spacer.s} ${theme.spacer.ms}`,
       },
     },
     '& .MuiFormLabel-root': {
@@ -44,6 +49,10 @@ const StyledTextField = styled(MuiTextField)(({ theme }) => {
   };
 });
 
-export const TextField: FC<TextFieldProps> = ({ ...props }) => {
-  return <StyledTextField {...props} variant='filled' size='small' />;
+export const TextField: FC<TextFieldProps> = ({ children, ...props }) => {
+  return (
+    <StyledTextField {...props} variant='filled' size='small'>
+      {children}
+    </StyledTextField>
+  );
 };

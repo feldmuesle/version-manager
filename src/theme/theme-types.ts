@@ -6,7 +6,7 @@ import {
 declare module '@mui/material/styles/createPalette' {
   export interface TypeText {
     tertiary: string;
-    info: string;
+    inverted: string;
     error: string;
     success: string;
     warning: string;
@@ -16,6 +16,7 @@ declare module '@mui/material/styles/createPalette' {
     default: string;
     primary: string;
     secondary: string;
+    tertiary: string;
   }
 }
 
