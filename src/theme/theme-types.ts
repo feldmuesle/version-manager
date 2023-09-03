@@ -11,6 +11,12 @@ declare module '@mui/material/styles/createPalette' {
     success: string;
     warning: string;
   }
+
+  export interface TypeBackground {
+    default: string;
+    primary: string;
+    secondary: string;
+  }
 }
 
 declare module '@mui/material/styles' {

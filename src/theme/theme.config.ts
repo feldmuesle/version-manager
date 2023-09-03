@@ -48,12 +48,12 @@ const PALETTE = {
   background: {
     default: '#FFFFFF',
     primary: '#111827',
-    secondary: '#374151',
+    secondary: '#F8FAFC',
     // warning: '#FF9800',
   },
   text: {
-    primary: '#111827',
-    secondary: '#374151',
+    primary: '#334155',
+    secondary: '#64748B',
     tertiary: '#6B7280',
     disabled: '#9CA3AF',
     info: '#075985',
