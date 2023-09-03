@@ -47,7 +47,9 @@ const THEME = {
 const PALETTE = {
   background: {
     default: '#FFFFFF',
-    warning: '#FF9800',
+    primary: '#111827',
+    secondary: '#374151',
+    // warning: '#FF9800',
   },
   text: {
     primary: '#111827',
@@ -61,18 +63,22 @@ const PALETTE = {
   },
   actions: {
     primary: {
-      text: '#4F46E5',
-      default: 'transparent',
+      contrast: '#FFFFFF',
+      default: '#4F46E5',
       hover: '#C7D2FE',
       active: '#4F46E5',
       outline: '#C7D2FE',
+      disabled: '#E2E8F0',
+      disabledText: '#CBD5E1',
     },
     secondary: {
-      text: '#64748B',
-      default: 'transparent',
+      contrast: '#FFFFFF',
+      default: '#64748B',
       hover: '#E2E8F0',
       active: '#64748B',
       outline: '#E2E8F0',
+      disabled: '#E2E8F0',
+      disabledText: '#CBD5E1',
     },
   },
 };

@@ -6,43 +6,75 @@ export type ButtonProps = {
   label: string;
   onClick: () => void;
   disabled?: boolean;
-  displayType: 'primary' | 'secondary';
+  color: 'primary' | 'secondary';
+  variant: 'contained' | 'outlined';
 };
 
 const StyledButton = styled(MuiButton, {
-  shouldForwardProp: (prop) => prop !== 'displayType',
+  shouldForwardProp: (prop) => prop !== 'color',
 })<{
-  displayType: ButtonProps['displayType'];
-}>(({ theme, displayType }) => {
-  const buttonTheme = theme.palette.actions[displayType];
+  color: ButtonProps['color'];
+  variant: ButtonProps['variant'];
+}>(({ theme, color, variant }) => {
+  const buttonTheme = theme.palette.actions[color];
   const typography = theme.typography.labelUppercase;
 
-  return {
+  const defaultStyling = {
     height: 36,
     padding: `0 ${theme.spacer.ms}`,
     ...typography,
-    color: buttonTheme.text,
-    backgroundColor: 'transparent',
     borderRadius: 6,
-    borderColor: buttonTheme.outline,
+  };
+
+  if (variant === 'outlined') {
+    return {
+      ...defaultStyling,
+      backgroundColor: buttonTheme.contrast,
+      color: buttonTheme.default,
+      border: `1px solid ${buttonTheme.outline}`,
+      '&:hover': {
+        backgroundColor: buttonTheme.hover,
+        borderColor: buttonTheme.outline,
+      },
+      '&:active': {
+        backgroundColor: buttonTheme.active,
+        borderColor: buttonTheme.outline,
+      },
+      '&.Mui-disabled': {
+        color: buttonTheme.disabled,
+        borderColor: buttonTheme.disabled,
+      },
+    };
+  }
+
+  return {
+    ...defaultStyling,
+    backgroundColor: buttonTheme.default,
+    color: buttonTheme.contrast,
+    border: 'none',
+    boxShadow: '0px 1px 3px 0px rgba(9, 30, 66, 0.12)',
     '&:hover': {
       backgroundColor: buttonTheme.hover,
-      borderColor: buttonTheme.outline,
+      boxShadow: '0px 1px 3px 0px rgba(9, 30, 66, 0.12)',
     },
     '&:active': {
       backgroundColor: buttonTheme.active,
-      borderColor: buttonTheme.outline,
     },
     '&.Mui-disabled': {
-      color: buttonTheme.outline,
-      borderColor: buttonTheme.outline,
+      color: buttonTheme.disabledText,
+      backgroundColor: buttonTheme.disabled,
     },
   };
 });
 
-export const Button: FC<ButtonProps> = ({ label, displayType, ...props }) => {
+export const Button: FC<ButtonProps> = ({
+  label,
+  color,
+  variant,
+  ...props
+}) => {
   return (
-    <StyledButton {...props} variant='outlined' displayType={displayType}>
+    <StyledButton {...props} variant={variant} color={color}>
       {label}
     </StyledButton>
   );
