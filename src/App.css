@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  max-width: 100%;
 }
 
 .App-header {
@@ -19,5 +19,4 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
 }

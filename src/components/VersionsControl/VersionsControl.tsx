@@ -42,7 +42,7 @@ const OPTIONS: { value: VersionOperator; label: string }[] = [
 ];
 
 const StyledVersionsControl = styled('div')`
-  width: 90%;
+  width: 80%;
   margin: 0 auto;
   background-color: ${({ theme }) => theme.palette.background.default};
   padding: ${({ theme }) => theme.spacer.ms};
@@ -50,6 +50,7 @@ const StyledVersionsControl = styled('div')`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacer.ms};
+  text-align: left;
 `;
 
 const StyledHeader = styled('div')`
@@ -72,12 +73,18 @@ const StyledEditSection = styled('div')`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: ${({ theme }) => theme.spacer.lg};
+`;
+
+const StyledErrorSection = styled('div')`
+  color: ${({ theme }) => theme.palette.text.error};
 `;
 
 export const VersionsControl: FC<VersionsControlProps> = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [operator, setOperator] = useState(OPTIONS[0].value);
   const [versionValue, setVersionValue] = useState('');
+  const [hasInputError, setHasInputError] = useState(false);
   const { versions, submitVersion } = useVersions();
 
   const handleAddVersionClick = () => {
@@ -86,17 +93,30 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
 
   const handleCancelClick = () => {
     setIsEditing(false);
+    setHasInputError(false);
   };
 
   const handleSubmitVersion = () => {
-    submitVersion(operator, versionValue);
-    setIsEditing(false);
-    resetForm();
+    const isValid = validateInput(versionValue);
+
+    if (isValid) {
+      submitVersion(operator, versionValue);
+      setIsEditing(false);
+      resetForm();
+    } else {
+      setHasInputError(true);
+    }
   };
 
   const resetForm = () => {
     setVersionValue('');
     setOperator(OPTIONS[0].value);
+    setHasInputError(false);
+  };
+
+  const validateInput = (valueToTest: string) => {
+    const pattern = /^\d+\.\d+\.\d+$/;
+    return pattern.test(valueToTest);
   };
 
   const handleVersionClick = () => {
@@ -157,19 +177,30 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
         {versions.length > 0 && versions.map(renderVersion)}
       </StyledVersionsGroup>
       {isEditing && (
-        <StyledEditSection>
-          <Select
-            onChange={handleSelect}
-            label='Operator'
-            options={OPTIONS}
-            selectedValue={operator}
-          />
-          <TextField
-            onChange={handleChange}
-            label='Version'
-            value={versionValue}
-          />
-        </StyledEditSection>
+        <div>
+          <StyledEditSection>
+            <Select
+              onChange={handleSelect}
+              label='Operator'
+              options={OPTIONS}
+              selectedValue={operator}
+            />
+            <TextField
+              onChange={handleChange}
+              label='Version'
+              value={versionValue}
+              error={hasInputError}
+              inputProps={{
+                inputMode: 'numeric',
+              }}
+            />
+          </StyledEditSection>
+          {hasInputError && (
+            <StyledErrorSection>
+              Version must be formatted as [num].[num].[num]
+            </StyledErrorSection>
+          )}
+        </div>
       )}
     </StyledVersionsControl>
   );

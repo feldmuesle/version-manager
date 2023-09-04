@@ -23,7 +23,6 @@ export interface SelectProps<T extends SelectOptionProps = SelectOptionProps> {
 const StyledSelect = styled(StyledTextField)(({ theme }) => {
   return {
     position: 'relative',
-    textAlign: 'left',
     '& .MuiSelect-select': {
       padding: `18px ${theme.spacer.ms} 13px`,
     },

@@ -58,7 +58,7 @@ const PALETTE = {
     tertiary: '#6B7280',
     disabled: '#9CA3AF',
     inverted: '#FFFFFF',
-    error: '#B91C1C',
+    error: '#EF4444',
     success: '#065F46',
     warning: '#9A3412',
   },
