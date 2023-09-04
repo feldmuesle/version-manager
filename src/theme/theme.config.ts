@@ -2,7 +2,7 @@ import { Breakpoints, createTheme } from '@mui/material';
 
 const THEME = {
   typography: {
-    fontFamily: `'proxima-nova', sans-serif`,
+    fontFamily: `'Inter', sans-serif`,
     htmlFontSize: 16,
     sectionTitle: {
       fontSize: '1rem', // 16px
