@@ -1,17 +1,20 @@
 import React from 'react';
 import './App.css';
 import VersionsEditor from './VersionsEditor';
+import { VersionsControl } from './components';
+import { ThemeProvider } from './theme';
 
 function App() {
   return (
-    <div className='App'>
-      <header className='App-header'>
-          Tactile React Interview Test
-      </header>
-      <main className='App-main'>
+    <ThemeProvider>
+      <div className='App'>
+        <header className='App-header'>Tactile React Interview Test</header>
+        <main className='App-main'>
           <VersionsEditor />
-      </main>
-    </div>
+          <VersionsControl />
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
 
