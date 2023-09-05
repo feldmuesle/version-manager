@@ -13,6 +13,7 @@ export interface SelectOptionItemProps extends SelectOptionProps {
 }
 
 export interface SelectProps<T extends SelectOptionProps = SelectOptionProps> {
+  name: string;
   label: string;
   onChange: (value: SelectOptionProps['value']) => void;
   options: T[];
@@ -24,7 +25,12 @@ const StyledSelect = styled(StyledTextField)(({ theme }) => {
   return {
     position: 'relative',
     '& .MuiSelect-select': {
-      padding: `18px ${theme.spacer.ms} 13px`,
+      paddingLeft: theme.spacer.ms,
+      paddingRight: theme.spacer.ms,
+
+      '&.MuiSelect-filled:focus': {
+        backgroundColor: `${theme.palette.background.tertiary}`,
+      },
     },
   };
 });
@@ -72,6 +78,7 @@ export const Select = <T extends SelectOptionProps = SelectOptionProps>({
       value={selectedValue}
       onChange={handleSelect}
       variant='filled'
+      size='small'
       SelectProps={{
         MenuProps: {
           anchorOrigin: {

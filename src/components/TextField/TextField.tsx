@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 
 export type TextFieldProps = {
+  name: string;
   label: string;
   value?: string;
   defaultValue?: string | number;
@@ -23,9 +24,12 @@ export const StyledTextField = styled(MuiTextField)(({ theme, error }) => {
     '& .MuiInputBase-root': {
       backgroundColor: `${theme.palette.background.tertiary}`,
       color: `${theme.palette.text.primary}`,
-      border: `1px solid ${error ? theme.palette.text.error : '#E2E8F0'}`,
+      border: `1px solid ${
+        error ? theme.palette.text.error : theme.palette.border.main
+      }`,
       borderRadius: 4,
       width: '362px',
+      height: '54px',
 
       '&.Mui-focused': {
         backgroundColor: `${theme.palette.background.tertiary}`,
@@ -41,13 +45,17 @@ export const StyledTextField = styled(MuiTextField)(({ theme, error }) => {
       },
 
       '& input': {
-        height: 38,
-        padding: `${theme.spacer.s} ${theme.spacer.ms}`,
         borderRadius: 'inherit',
+        backgroundColor: 'transparent',
+        padding: `${theme.spacer.lg} ${theme.spacer.ms} 5px`,
+        '&:focus': {
+          backgroundColor: `${theme.palette.background.tertiary}`,
+        },
       },
     },
     '& .MuiFormLabel-root': {
       color: `${theme.palette.text[error ? 'error' : 'secondary']}`,
+      lineHeight: theme.spacer.xl,
 
       '&.Mui-focused': {
         color: `${theme.palette.text[error ? 'error' : 'secondary']}`,
