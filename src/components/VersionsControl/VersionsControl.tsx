@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler, FC, useState } from 'react';
 import { styled } from '@mui/material/styles';
+import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '../Button';
 import { Chip } from '../Chip';
 import { TextField } from '../TextField';
@@ -8,16 +9,15 @@ import { Version, VersionOperator, useVersions } from '../../hooks';
 
 export type VersionsControlProps = {};
 
-const OPERATOR_MAP: { [key in VersionOperator]: string | string[] } = {
+const OPERATOR_MAP: { [key in VersionOperator]: string } = {
   equal: '',
   greater_than: '>',
   greater_than_or_equal: '≥',
   less_than: '<',
   less_than_or_equal: '≤',
-  between: [']', '['],
 };
 
-const OPTIONS: { value: VersionOperator; label: string }[] = [
+export const OPTIONS: { value: VersionOperator; label: string }[] = [
   { value: 'equal', label: 'equal =' },
   {
     value: 'greater_than',
@@ -34,10 +34,6 @@ const OPTIONS: { value: VersionOperator; label: string }[] = [
   {
     value: 'less_than_or_equal',
     label: 'less than or equal to ≤',
-  },
-  {
-    value: 'between',
-    label: 'between',
   },
 ];
 
@@ -86,7 +82,8 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   const [operator, setOperator] = useState(OPTIONS[0].value);
   const [versionValue, setVersionValue] = useState('');
   const [hasInputError, setHasInputError] = useState(false);
-  const { versions, submitVersion, updateVersion } = useVersions();
+  const { versions, submitVersion, updateVersion, deleteVersion } =
+    useVersions();
 
   const handleAddVersionClick = () => {
     setIsEditSectionVisible(true);
@@ -124,6 +121,12 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     }
   };
 
+  const handleDeleteVersion = (updateVersionId: string) => {
+    deleteVersion(updateVersionId);
+    setIsEditSectionVisible(false);
+    resetForm();
+  };
+
   const resetForm = () => {
     setVersionValue('');
     setOperator(OPTIONS[0].value);
@@ -136,8 +139,14 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     return pattern.test(valueToTest);
   };
 
-  const handleVersionClick = () => {
-    console.log('clicked on version');
+  const handleVersionClick = (versionId: string) => {
+    const versionToEdit = versions.find((version) => version.id === versionId);
+    if (versionToEdit) {
+      setUpdateVersionId(versionId);
+      setVersionValue(versionToEdit.value);
+      setOperator(versionToEdit.operator);
+      setIsEditSectionVisible(true);
+    }
   };
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -150,13 +159,9 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   };
 
   const renderVersion = (version: Version) => {
-    const label = Array.isArray(OPERATOR_MAP[version.operator])
-      ? `${OPERATOR_MAP[version.operator][0]} ${version.versions[0]} ${
-          OPERATOR_MAP[version.operator][1]
-        }`
-      : OPERATOR_MAP[version.operator].length
-      ? `${OPERATOR_MAP[version.operator]} ${version.versions[0]}`
-      : version.versions[0];
+    const label = OPERATOR_MAP[version.operator].length
+      ? `${OPERATOR_MAP[version.operator]} ${version.value}`
+      : version.value;
     return (
       <Chip
         key={version.id}
@@ -204,12 +209,14 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
         <div>
           <StyledEditSection>
             <Select
+              name='operator'
               onChange={handleSelect}
               label='Operator'
               options={OPTIONS}
               selectedValue={operator}
             />
             <TextField
+              name='version'
               onChange={handleChange}
               label='Version'
               value={versionValue}
@@ -218,6 +225,14 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
                 inputMode: 'numeric',
               }}
             />
+            {updateVersionId && (
+              <Button
+                onClick={() => handleDeleteVersion(updateVersionId)}
+                startIcon={<CloseIcon />}
+                variant='outlined'
+                color='error'
+              />
+            )}
           </StyledEditSection>
           {hasInputError && (
             <StyledErrorSection>

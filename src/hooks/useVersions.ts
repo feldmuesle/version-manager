@@ -6,8 +6,7 @@ export type VersionOperator =
   | 'greater_than'
   | 'greater_than_or_equal'
   | 'less_than'
-  | 'less_than_or_equal'
-  | 'between';
+  | 'less_than_or_equal';
 
 export type Version = {
   operator: VersionOperator;
@@ -39,11 +38,17 @@ export const useVersions = () => {
       return prevVersions.map((v) => (v.id === version.id ? version : v));
     });
   };
+
+  const handleDeleteVersion = (id: string) => {
+    setVersions((prevVersions) =>
+      versions.filter((version) => version.id !== id).sort(sortVersions)
+    );
   };
 
   return {
     submitVersion: handleSubmitVersion,
     updateVersion: handleUpdateVersion,
+    deleteVersion: handleDeleteVersion,
     versions,
   };
 };
