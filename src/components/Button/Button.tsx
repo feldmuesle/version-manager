@@ -1,22 +1,22 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import { Button as MuiButton } from '@mui/material';
 
 export type ButtonProps = {
-  label: string;
+  label?: string;
   onClick: () => void;
   disabled?: boolean;
-  color: 'primary' | 'secondary';
+  startIcon?: ReactNode;
+  color: 'primary' | 'secondary' | 'error';
   variant: 'contained' | 'outlined';
 };
 
 const StyledButton = styled(MuiButton, {
-  shouldForwardProp: (prop) => prop !== 'color',
+  shouldForwardProp: (prop) => prop !== 'iconOnly',
 })<{
-  color: ButtonProps['color'];
   variant: ButtonProps['variant'];
-}>(({ theme, color, variant }) => {
-  const buttonTheme = theme.palette.actions[color];
+  iconOnly: boolean;
+}>(({ theme, variant, iconOnly }) => {
   const typography = theme.typography.labelUppercase;
 
   const defaultStyling = {
@@ -24,57 +24,40 @@ const StyledButton = styled(MuiButton, {
     padding: `0 ${theme.spacer.ms}`,
     ...typography,
     borderRadius: 6,
-  };
-
-  if (variant === 'outlined') {
-    return {
-      ...defaultStyling,
-      backgroundColor: buttonTheme.contrast,
-      color: buttonTheme.default,
-      border: `1px solid ${buttonTheme.outline}`,
-      '&:hover': {
-        backgroundColor: buttonTheme.hover,
-        borderColor: buttonTheme.outline,
-      },
-      '&:active': {
-        backgroundColor: buttonTheme.active,
-        borderColor: buttonTheme.outline,
-      },
-      '&.Mui-disabled': {
-        color: buttonTheme.disabled,
-        borderColor: buttonTheme.disabled,
-      },
-    };
-  }
-
-  return {
-    ...defaultStyling,
-    backgroundColor: buttonTheme.default,
-    color: buttonTheme.contrast,
-    border: 'none',
-    boxShadow: '0px 1px 3px 0px rgba(9, 30, 66, 0.12)',
     '&:hover': {
-      backgroundColor: buttonTheme.hover,
-      boxShadow: '0px 1px 3px 0px rgba(9, 30, 66, 0.12)',
-    },
-    '&:active': {
-      backgroundColor: buttonTheme.active,
-    },
-    '&.Mui-disabled': {
-      color: buttonTheme.disabledText,
-      backgroundColor: buttonTheme.disabled,
+      backgroundColor:
+        variant === 'outlined' ? 'transparent' : theme.palette.primary.main,
     },
   };
+
+  const iconOnlyStyling = iconOnly
+    ? {
+        padding: 0,
+        minWidth: 36,
+        '& .MuiButton-startIcon': {
+          margin: 0,
+        },
+      }
+    : {};
+
+  return { ...defaultStyling, ...iconOnlyStyling };
 });
 
 export const Button: FC<ButtonProps> = ({
   label,
   color,
   variant,
+  startIcon,
   ...props
 }) => {
   return (
-    <StyledButton {...props} variant={variant} color={color}>
+    <StyledButton
+      {...props}
+      variant={variant}
+      color={color}
+      startIcon={startIcon}
+      iconOnly={!label && !!startIcon}
+    >
       {label}
     </StyledButton>
   );

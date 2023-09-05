@@ -22,6 +22,16 @@ const THEME = {
         disableRipple: true,
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        outlinedPrimary: {
+          borderColor: '#C7D2FE',
+        },
+        outlinedSecondary: {
+          borderColor: '#E2E8F0',
+        },
+      },
+    },
   },
   spacing: 4,
   spacer: {
@@ -47,7 +57,7 @@ const THEME = {
 const PALETTE = {
   background: {
     default: '#FFFFFF',
-    primary: '#111827',
+    primary: '#334155',
     secondary: '#64748B',
     tertiary: '#F8FAFC',
     // warning: '#FF9800',
@@ -62,25 +72,17 @@ const PALETTE = {
     success: '#065F46',
     warning: '#9A3412',
   },
-  actions: {
-    primary: {
-      contrast: '#FFFFFF',
-      default: '#4F46E5',
-      hover: '#C7D2FE',
-      active: '#4F46E5',
-      outline: '#C7D2FE',
-      disabled: '#E2E8F0',
-      disabledText: '#CBD5E1',
-    },
-    secondary: {
-      contrast: '#FFFFFF',
-      default: '#64748B',
-      hover: '#E2E8F0',
-      active: '#64748B',
-      outline: '#E2E8F0',
-      disabled: '#E2E8F0',
-      disabledText: '#CBD5E1',
-    },
+  primary: {
+    main: '#4F46E5',
+  },
+  secondary: {
+    main: '#64748B',
+  },
+  error: {
+    main: '#EF4444',
+  },
+  border: {
+    main: '#E2E8F0',
   },
   versions: {
     production: {

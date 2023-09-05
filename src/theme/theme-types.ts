@@ -5,11 +5,11 @@ import {
 
 declare module '@mui/material/styles/createPalette' {
   export interface TypeText {
-    tertiary: string;
-    inverted: string;
-    error: string;
-    success: string;
-    warning: string;
+    tertiary: TypeText['primary'];
+    inverted: TypeText['primary'];
+    error: TypeText['primary'];
+    success: TypeText['primary'];
+    warning: TypeText['primary'];
   }
 
   export interface TypeBackground {
@@ -29,12 +29,11 @@ declare module '@mui/material/styles' {
     spacer: TactileTheme['spacer'];
   }
   export interface Palette {
-    actions: TactilePalette['actions'];
     versions: TactilePalette['versions'];
     text: TactilePalette['text'];
+    border: Palette['primary'];
   }
   export interface PaletteOptions {
-    actions: TactilePalette['actions'];
     versions: TactilePalette['versions'];
   }
 }
