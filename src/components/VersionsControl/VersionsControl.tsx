@@ -81,19 +81,20 @@ const StyledErrorSection = styled('div')`
 `;
 
 export const VersionsControl: FC<VersionsControlProps> = () => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditSectionVisible, setIsEditSectionVisible] = useState(false);
+  const [updateVersionId, setUpdateVersionId] = useState<string | undefined>();
   const [operator, setOperator] = useState(OPTIONS[0].value);
   const [versionValue, setVersionValue] = useState('');
   const [hasInputError, setHasInputError] = useState(false);
-  const { versions, submitVersion } = useVersions();
+  const { versions, submitVersion, updateVersion } = useVersions();
 
   const handleAddVersionClick = () => {
-    setIsEditing(true);
+    setIsEditSectionVisible(true);
   };
 
   const handleCancelClick = () => {
-    setIsEditing(false);
-    setHasInputError(false);
+    setIsEditSectionVisible(false);
+    resetForm();
   };
 
   const handleSubmitVersion = () => {
@@ -101,7 +102,22 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
 
     if (isValid) {
       submitVersion(operator, versionValue);
-      setIsEditing(false);
+      setIsEditSectionVisible(false);
+      resetForm();
+    } else {
+      setHasInputError(true);
+    }
+  };
+
+  const handleUpdateVersion = () => {
+    const isValid = validateInput(versionValue);
+    if (isValid && updateVersionId) {
+      updateVersion({
+        operator,
+        value: versionValue,
+        id: updateVersionId,
+      });
+      setIsEditSectionVisible(false);
       resetForm();
     } else {
       setHasInputError(true);
@@ -112,6 +128,7 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     setVersionValue('');
     setOperator(OPTIONS[0].value);
     setHasInputError(false);
+    setUpdateVersionId(undefined);
   };
 
   const validateInput = (valueToTest: string) => {
@@ -141,7 +158,12 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
       ? `${OPERATOR_MAP[version.operator]} ${version.versions[0]}`
       : version.versions[0];
     return (
-      <Chip label={label} type='production' onClick={handleVersionClick} />
+      <Chip
+        key={version.id}
+        label={label}
+        type='production'
+        onClick={() => handleVersionClick(version.id)}
+      />
     );
   };
 
@@ -149,11 +171,13 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     <StyledVersionsControl>
       <StyledHeader>
         <span>Versions</span>
-        {isEditing ? (
+        {isEditSectionVisible ? (
           <StyledButtonGroup>
             <Button
-              label='add'
-              onClick={handleSubmitVersion}
+              label={updateVersionId ? 'save' : 'add'}
+              onClick={
+                updateVersionId ? handleUpdateVersion : handleSubmitVersion
+              }
               color='primary'
               variant='outlined'
             />
@@ -176,7 +200,7 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
       <StyledVersionsGroup>
         {versions.length > 0 && versions.map(renderVersion)}
       </StyledVersionsGroup>
-      {isEditing && (
+      {isEditSectionVisible && (
         <div>
           <StyledEditSection>
             <Select
