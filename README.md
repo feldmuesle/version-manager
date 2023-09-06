@@ -11,6 +11,9 @@ Although this is just a little project without any API, in a real case scenario 
 
 As the main focus has been the VersionsEditor, I haven't added thorough testing to all components, but focused mainly on testing the VersionsEditor as well as it's underlying hook.
 
+![tactile](https://github.com/feldmuesle/versions-component/assets/7722503/223c6b21-071c-47d5-98e0-dd3c8198e8a6)
+
+
 ## Available Scripts
 
 In the project directory, you can run:
