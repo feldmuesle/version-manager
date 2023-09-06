@@ -107,12 +107,13 @@ export const VersionsEditor: FC = () => {
     }
   };
 
-  const handleDeleteVersion = (updateVersionId: string) => {
+  const handleDeleteVersion = (versionId: string) => {
     const deleteVersion =
       activeVersionType === 'production'
         ? deleteProdVersion
         : deleteTestVersion;
-    deleteVersion(updateVersionId);
+
+    deleteVersion(versionId);
     setIsEditSectionVisible(false);
     resetForm();
   };
@@ -126,15 +127,18 @@ export const VersionsEditor: FC = () => {
 
   const validateInput = (valueToTest: string) => {
     const pattern = /^\d+\.\d+\.\d+$/;
+
     return pattern.test(valueToTest);
   };
 
-  const handleVersionClick = (versionId: string) => {
+  const handleVersionClick = (versionId: string, type: VersionType) => {
     const versionToEdit =
       prodVersions.find((version) => version.id === versionId) ??
       testVersions.find((version) => version.id === versionId);
+
     if (versionToEdit) {
       setUpdateVersionId(versionId);
+      setActiveVersionType(type);
       setVersionValue(versionToEdit.value);
       setOperator(versionToEdit.operator);
       setIsEditSectionVisible(true);
@@ -161,7 +165,7 @@ export const VersionsEditor: FC = () => {
         key={version.id}
         label={label}
         color={color}
-        onClick={() => handleVersionClick(version.id)}
+        onClick={() => handleVersionClick(version.id, version.type)}
       />
     );
   };

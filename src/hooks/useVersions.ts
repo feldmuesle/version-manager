@@ -46,10 +46,13 @@ export const useVersions = (type: VersionType) => {
 
   const handleDeleteVersion = (id: string) => {
     setVersions((prevVersions) => {
-      const remainingVersions = versions
+      const remainingVersions = prevVersions
         .filter((version) => version.id !== id)
         .sort(sortVersions);
-      return setIsOverlapping(remainingVersions);
+
+      return remainingVersions.length > 0
+        ? setIsOverlapping(remainingVersions)
+        : remainingVersions;
     });
   };
 
