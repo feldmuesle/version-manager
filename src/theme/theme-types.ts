@@ -1,7 +1,4 @@
-import {
-  Palette as TactilePalette,
-  Theme as TactileTheme,
-} from './theme.config';
+import { Theme as TactileTheme } from './theme.config';
 
 declare module '@mui/material/styles/createPalette' {
   export interface TypeText {
@@ -22,18 +19,25 @@ declare module '@mui/material/styles/createPalette' {
 
 declare module '@mui/material/styles' {
   export interface TypographyVariants {
+    pageTitle: React.CSSProperties;
     sectionTitle: React.CSSProperties;
     labelUppercase: React.CSSProperties;
+    labelBold: React.CSSProperties;
+    fieldLabel: React.CSSProperties;
   }
   export interface Theme {
     spacer: TactileTheme['spacer'];
   }
   export interface Palette {
-    versions: TactilePalette['versions'];
-    text: TactilePalette['text'];
     border: Palette['primary'];
+    production: Palette['primary'];
+    test: Palette['primary'];
   }
-  export interface PaletteOptions {
-    versions: TactilePalette['versions'];
+}
+
+declare module '@mui/material' {
+  interface ChipPropsColorOverrides {
+    production: true;
+    test: true;
   }
 }

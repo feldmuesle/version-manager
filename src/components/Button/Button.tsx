@@ -24,6 +24,7 @@ const StyledButton = styled(MuiButton, {
     padding: `0 ${theme.spacer.ms}`,
     ...typography,
     borderRadius: 6,
+    letterSpacing: '1.25px',
     '&:hover': {
       backgroundColor:
         variant === 'outlined' ? 'transparent' : theme.palette.primary.main,

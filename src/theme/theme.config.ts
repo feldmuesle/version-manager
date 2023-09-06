@@ -1,19 +1,35 @@
-import { Breakpoints, createTheme } from '@mui/material';
+import { createTheme } from '@mui/material';
 
 const THEME = {
   typography: {
-    fontFamily: `'Inter', sans-serif`,
+    fontFamily: ['Inter', 'Quicksand', 'sans-serif'].join(','),
     htmlFontSize: 16,
+    pageTitle: {
+      fontSize: '1.25rem', // 20px
+      fontWeight: 600,
+      lineHeight: '120%', // 24px
+    },
     sectionTitle: {
       fontSize: '1rem', // 16px
       fontWeight: 600,
-      lineHeight: '1.25rem', // 20px
+      lineHeight: '162.5%', // 26px
     },
     labelUppercase: {
+      fontSize: '0.875rem', // 14px
+      fontWeight: 600,
+      lineHeight: '171.429%', // 24px
+      textTransform: 'uppercase',
+    },
+    labelBold: {
       fontSize: '0.75rem', // 12px
       fontWeight: 700,
-      lineHeight: '1.125rem', // 18px
-      textTransform: 'uppercase',
+      lineHeight: '150%', // 18px
+    },
+    fieldLabel: {
+      fontSize: '1rem', // 16px
+      fontWeight: 400,
+      lineHeight: '150%', // 24px
+      letterSpacing: '0.4px',
     },
   },
   components: {
@@ -43,37 +59,26 @@ const THEME = {
     lg: '1.5rem', // 24px
     xl: '2rem', // 32px
   },
-  breakpoints: {
-    values: {
-      xs: 425,
-      sm: 600,
-      md: 900,
-      lg: 1200,
-      xl: 1536,
-    },
-  },
 };
 
 const PALETTE = {
   background: {
     default: '#FFFFFF',
     primary: '#334155',
-    secondary: '#64748B',
+    secondary: '#E2E8F0', // #212831
     tertiary: '#F8FAFC',
-    // warning: '#FF9800',
   },
   text: {
-    primary: '#334155',
-    secondary: '#64748B',
+    primary: '#64748B',
+    secondary: '#334155',
     tertiary: '#6B7280',
     disabled: '#9CA3AF',
-    inverted: '#FFFFFF',
+    inverted: '#F8FAFC',
     error: '#EF4444',
-    success: '#065F46',
-    warning: '#9A3412',
   },
   primary: {
     main: '#4F46E5',
+    dark: '#64748B',
   },
   secondary: {
     main: '#64748B',
@@ -84,25 +89,15 @@ const PALETTE = {
   border: {
     main: '#E2E8F0',
   },
-  versions: {
-    production: {
-      default: '#334155',
-      text: '#F8FAFC',
-      hover: '#64748B',
-      hoverText: '#F8FAFC',
-    },
-    test: {
-      default: '#64748B',
-      text: '#E2E8F0',
-      hover: '#64748B',
-      hoverText: '#CBD5E1',
-    },
-    warning: {
-      default: '#F59E0B',
-      text: '#F8FAFC',
-      hover: '#DB8804',
-      hoverText: '#F8FAFC',
-    },
+  production: {
+    main: '#334155',
+    dark: '#64748B',
+    contrastText: '#F8FAFC',
+  },
+  test: {
+    main: '#E2E8F0',
+    dark: '#CBD5E1',
+    contrastText: '#64748B',
   },
 };
 
@@ -110,7 +105,6 @@ export type Palette = typeof PALETTE;
 
 export type Theme = typeof THEME & {
   palette: Palette;
-  breakpoints: Breakpoints;
 };
 
 export const defaultTheme = createTheme({ ...THEME, palette: { ...PALETTE } });

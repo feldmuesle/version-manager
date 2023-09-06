@@ -36,23 +36,26 @@ const StyledSelect = styled(StyledTextField)(({ theme }) => {
 });
 
 const StyledOption = styled(MenuItem)(({ theme: { palette, spacer } }) => {
-  const backgroundColorEmphasized = {
+  const backgroundHover = {
     backgroundColor: palette.background.secondary,
+  };
+  const backgroundSelected = {
+    backgroundColor: palette.background.primary,
   };
 
   return {
     color: palette.text.primary,
     backgroundColor: palette.background.default,
 
-    ':hover': { ...backgroundColorEmphasized, color: palette.text.inverted },
-    ':focus-visible': backgroundColorEmphasized,
+    ':hover': backgroundHover,
+    ':focus-visible': backgroundHover,
 
     '&.Mui-selected': {
-      backgroundColor: palette.background.primary,
+      ...backgroundSelected,
       color: palette.text.inverted,
 
-      '&:hover': backgroundColorEmphasized,
-      '&:focus-visible': backgroundColorEmphasized,
+      '&:hover': backgroundSelected,
+      '&:focus-visible': backgroundSelected,
     },
   };
 });

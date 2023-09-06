@@ -21,15 +21,16 @@ export type TextFieldProps = {
 
 export const StyledTextField = styled(MuiTextField)(({ theme, error }) => {
   return {
+    flex: '1 0 0',
+    maxWidth: '360px',
     '& .MuiInputBase-root': {
+      height: '54px',
       backgroundColor: `${theme.palette.background.tertiary}`,
       color: `${theme.palette.text.primary}`,
       border: `1px solid ${
         error ? theme.palette.text.error : theme.palette.border.main
       }`,
       borderRadius: 4,
-      width: '362px',
-      height: '54px',
 
       '&.Mui-focused': {
         backgroundColor: `${theme.palette.background.tertiary}`,
@@ -54,6 +55,7 @@ export const StyledTextField = styled(MuiTextField)(({ theme, error }) => {
       },
     },
     '& .MuiFormLabel-root': {
+      ...theme.typography.fieldLabel,
       color: `${theme.palette.text[error ? 'error' : 'secondary']}`,
       lineHeight: theme.spacer.xl,
 
