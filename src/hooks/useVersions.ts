@@ -15,14 +15,11 @@ export type Version = {
   value: string;
   id: string;
   type: VersionType;
+  isOverlapping?: boolean;
 };
 
 export const useVersions = (type: VersionType) => {
   const [versions, setVersions] = useState<Version[]>([]);
-
-  const sortVersions = (a: Version, b: Version) => {
-    return a.value.localeCompare(b.value);
-  };
 
   const handleSubmitVersion = (operator: VersionOperator, value: string) => {
     const newVersion: Version = {
@@ -32,21 +29,28 @@ export const useVersions = (type: VersionType) => {
       id: uuidv4(),
     };
 
-    setVersions((prevVersions) =>
-      [...prevVersions, newVersion].sort(sortVersions)
-    );
+    setVersions((prevVersions) => {
+      const sortedVersions = [...prevVersions, newVersion].sort(sortVersions);
+      return setIsOverlapping(sortedVersions);
+    });
   };
 
-  const handleUpdateVersion = (version: Version) => {
+  const handleUpdateVersion = (version: Omit<Version, 'type'>) => {
     setVersions((prevVersions) => {
-      return prevVersions.map((v) => (v.id === version.id ? version : v));
+      const updatedVersions = prevVersions.map((v) =>
+        v.id === version.id ? { ...version, type } : v
+      );
+      return setIsOverlapping(updatedVersions);
     });
   };
 
   const handleDeleteVersion = (id: string) => {
-    setVersions((prevVersions) =>
-      versions.filter((version) => version.id !== id).sort(sortVersions)
-    );
+    setVersions((prevVersions) => {
+      const remainingVersions = versions
+        .filter((version) => version.id !== id)
+        .sort(sortVersions);
+      return setIsOverlapping(remainingVersions);
+    });
   };
 
   return {
@@ -56,3 +60,74 @@ export const useVersions = (type: VersionType) => {
     versions,
   };
 };
+
+function sortVersions(a: Version, b: Version) {
+  return a.value.localeCompare(b.value);
+}
+
+function compareVersions(
+  version1: Version['value'],
+  version2: Version['value']
+) {
+  const segments1 = version1.split('.');
+  const segments2 = version2.split('.');
+
+  for (let i = 0; i < segments1.length; i++) {
+    const segment1 = parseInt(segments1[i], 10);
+    const segment2 = parseInt(segments2[i], 10);
+
+    if (segment1 > segment2) {
+      return 'greater_than';
+    } else if (segment1 < segment2) {
+      return 'less_than';
+    }
+  }
+
+  return 'equal';
+}
+
+function setIsOverlapping(versions: Version[]) {
+  return versions.map((currentVersion) => {
+    const isOverlapping = versions.some((otherVersion) => {
+      // don't compare to itself
+      if (currentVersion.id === otherVersion.id) {
+        return false;
+      }
+
+      const currentRelation = compareVersions(
+        currentVersion.value,
+        otherVersion.value
+      );
+
+      if (
+        (currentRelation === 'equal' &&
+          ['equal', 'less_than_or_equal', 'greater_than_or_equal'].includes(
+            otherVersion.operator
+          ) &&
+          !['less_than', 'greater_than'].includes(currentVersion.operator)) ||
+        (currentRelation === 'greater_than' &&
+          (['greater_than', 'greater_than_or_equal'].includes(
+            otherVersion.operator
+          ) ||
+            ['less_than', 'less_than_or_equal'].includes(
+              currentVersion.operator
+            ))) ||
+        (currentRelation === 'less_than' &&
+          (['less_than', 'less_than_or_equal'].includes(
+            otherVersion.operator
+          ) ||
+            ['greater_than', 'greater_than_or_equal'].includes(
+              currentVersion.operator
+            )))
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    return {
+      ...currentVersion,
+      isOverlapping,
+    };
+  });
+}
