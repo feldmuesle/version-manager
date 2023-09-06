@@ -1,28 +1,28 @@
 import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithTheme } from '../../test-utils';
-import { OPTIONS, VersionsControl } from '../VersionsControl';
+import { OPTIONS, VersionsEditor } from '.';
 import { defaultTheme } from '../../theme';
 
 describe('rendering', () => {
   it('renders without crashing', () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
   });
 
   it('displays heading', () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const heading = screen.getByText(/Versions/i);
     expect(heading).toBeInTheDocument();
   });
 
   it('displays "Add version" button', () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     expect(addVersionBtn).toBeInTheDocument();
   });
 
   it('displays form inputs when "Add version" button is clicked', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -34,7 +34,7 @@ describe('rendering', () => {
   });
 
   it('shows all operators as options', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -51,7 +51,7 @@ describe('rendering', () => {
   });
 
   it('adds production version with correct styling when clicking "Add version" button', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -77,9 +77,9 @@ describe('rendering', () => {
     });
   });
 
-  it('adds test version with correct styling when clicking "Add test version" button', async () => {
-    renderWithTheme(<VersionsControl />);
-    const addVersionBtn = screen.getByText(/Add test version/i);
+  it('adds test version with correct styling when clicking "Add testversion" button', async () => {
+    renderWithTheme(<VersionsEditor />);
+    const addVersionBtn = screen.getByText(/Add testversion/i);
     userEvent.click(addVersionBtn);
 
     const versionInput = await screen.findByRole('textbox');
@@ -106,7 +106,7 @@ describe('rendering', () => {
 
   it('renders overlapping versions with correct colors', async () => {
     const versionValue = '1.2.3';
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -148,7 +148,7 @@ describe('rendering', () => {
 
 describe('user interactions', () => {
   it('can add a version and hides input section thereafter', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -167,7 +167,7 @@ describe('user interactions', () => {
   });
 
   it('can update a version', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -199,7 +199,7 @@ describe('user interactions', () => {
   });
 
   it('can delete a version', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -227,7 +227,7 @@ describe('user interactions', () => {
 
 describe('input validation', () => {
   it('accepts values in format [num].[num].[num]', async () => {
-    renderWithTheme(<VersionsControl />);
+    renderWithTheme(<VersionsEditor />);
     const addVersionBtn = screen.getByText(/Add version/i);
     userEvent.click(addVersionBtn);
 
@@ -251,7 +251,7 @@ describe('input validation', () => {
   test.each(['text', '123', '1.23.', '1.2.3.', '1.2.3.4'])(
     'displays an error if value typed in is %p',
     async (inputValue) => {
-      renderWithTheme(<VersionsControl />);
+      renderWithTheme(<VersionsEditor />);
       const addVersionBtn = screen.getByText(/Add version/i);
       userEvent.click(addVersionBtn);
 

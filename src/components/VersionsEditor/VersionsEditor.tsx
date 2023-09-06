@@ -40,7 +40,7 @@ export const OPTIONS: { value: VersionOperator; label: string }[] = [
   },
 ];
 
-export const VersionsControl: FC = () => {
+export const VersionsEditor: FC = () => {
   const [isEditSectionVisible, setIsEditSectionVisible] = useState(false);
   const [activeVersionType, setActiveVersionType] =
     useState<VersionType>('production');
