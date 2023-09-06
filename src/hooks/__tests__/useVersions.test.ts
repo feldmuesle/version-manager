@@ -92,3 +92,116 @@ describe('hook return values', () => {
     });
   });
 });
+
+describe('version overlap detection', () => {
+  it('marks only overlapping versions', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('equal', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+      result.current.submitVersion('equal', '1.2.4');
+    });
+
+    const overlappingVersions = result.current.versions.filter(
+      (version) => version.value === '1.2.3'
+    );
+    const nonOverlappingVersions = result.current.versions.filter(
+      (version) => version.value !== '1.2.3'
+    );
+    overlappingVersions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+
+    expect(nonOverlappingVersions[0].isOverlapping).toBe(false);
+  });
+
+  it('marks versions as overlapping if using "equal" operator and having same value', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('equal', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+    });
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+  });
+
+  it('marks versions as overlapping if using "greater_than" operator and having versions that fit that range', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('greater_than', '1.2.3');
+      result.current.submitVersion('equal', '1.2.4');
+    });
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+  });
+
+  it('marks versions as overlapping if using "greater_than_or_equal" operator and having versions that fit that range', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('greater_than_or_equal', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+      result.current.submitVersion('equal', '2.2.3');
+    });
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+  });
+
+  it('marks versions as overlapping if using "less_than" operator and having versions that fit that range', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('less_than', '1.2.3');
+      result.current.submitVersion('equal', '0.2.3');
+    });
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+  });
+
+  it('marks versions as overlapping if using "less_than_or_equal" operator and having versions that fit that range', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('less_than_or_equal', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+      result.current.submitVersion('equal', '0.2.3');
+    });
+
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(true);
+    });
+  });
+
+  it('does not mark version if values are equal, but operator point to "less_than"', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('less_than', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+    });
+
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(false);
+    });
+  });
+
+  it('does not mark version if values are equal, but operator point to "greater_than"', () => {
+    const { result } = renderHook(() => useVersions('production'));
+
+    act(() => {
+      result.current.submitVersion('greater_than', '1.2.3');
+      result.current.submitVersion('equal', '1.2.3');
+    });
+
+    result.current.versions.forEach((version) => {
+      expect(version.isOverlapping).toBe(false);
+    });
+  });
+});
