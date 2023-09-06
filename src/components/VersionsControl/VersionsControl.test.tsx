@@ -2,6 +2,7 @@ import { screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithTheme } from '../../test-utils';
 import { OPTIONS, VersionsControl } from '../VersionsControl';
+import { defaultTheme } from '../../theme';
 
 describe('rendering', () => {
   it('renders without crashing', () => {
@@ -47,6 +48,101 @@ describe('rendering', () => {
     });
 
     expect(options.length).toEqual(OPTIONS.length);
+  });
+
+  it('adds production version with correct styling when clicking "Add version" button', async () => {
+    renderWithTheme(<VersionsControl />);
+    const addVersionBtn = screen.getByText(/Add version/i);
+    userEvent.click(addVersionBtn);
+
+    const versionInput = await screen.findByRole('textbox');
+    const addBtn = await screen.findByText(/Add/i);
+
+    await act(async () => {
+      await userEvent.type(versionInput, '1.2.3');
+    });
+    userEvent.click(addBtn);
+    const version = await screen.findByText('1.2.3');
+
+    expect(version).toBeInTheDocument();
+    expect(version).toHaveStyle({
+      backgroundColor: hexToRGB(defaultTheme.palette.production.main),
+      color: hexToRGB(defaultTheme.palette.production.contrastText),
+    });
+
+    userEvent.hover(version);
+
+    expect(version).toHaveStyle({
+      backgroundColor: hexToRGB(defaultTheme.palette.production.dark),
+    });
+  });
+
+  it('adds test version with correct styling when clicking "Add test version" button', async () => {
+    renderWithTheme(<VersionsControl />);
+    const addVersionBtn = screen.getByText(/Add test version/i);
+    userEvent.click(addVersionBtn);
+
+    const versionInput = await screen.findByRole('textbox');
+    const addBtn = await screen.findByText(/Add/i);
+
+    await act(async () => {
+      await userEvent.type(versionInput, '1.2.3');
+    });
+    userEvent.click(addBtn);
+    const version = await screen.findByText('1.2.3');
+
+    expect(version).toBeInTheDocument();
+    expect(version).toHaveStyle({
+      backgroundColor: hexToRGB(defaultTheme.palette.test.main),
+      color: hexToRGB(defaultTheme.palette.test.contrastText),
+    });
+
+    userEvent.hover(version);
+
+    expect(version).toHaveStyle({
+      backgroundColor: hexToRGB(defaultTheme.palette.test.dark),
+    });
+  });
+
+  it('renders overlapping versions with correct colors', async () => {
+    const versionValue = '1.2.3';
+    renderWithTheme(<VersionsControl />);
+    const addVersionBtn = screen.getByText(/Add version/i);
+    userEvent.click(addVersionBtn);
+
+    let versionInput = await screen.findByRole('textbox');
+    const addBtn = await screen.findByText(/Add/i);
+
+    await act(async () => {
+      await userEvent.type(versionInput, versionValue);
+    });
+
+    userEvent.click(addBtn);
+    userEvent.click(addVersionBtn);
+
+    versionInput = await screen.findByRole('textbox');
+
+    await act(async () => {
+      await userEvent.type(versionInput, versionValue);
+    });
+    userEvent.click(addBtn);
+
+    const equalVersions = await screen.findAllByText(versionValue);
+
+    expect(equalVersions.length).toEqual(2);
+
+    equalVersions.forEach((version) => {
+      expect(version).toHaveStyle({
+        backgroundColor: hexToRGB(defaultTheme.palette.warning.main),
+        color: hexToRGB(defaultTheme.palette.warning.contrastText),
+      });
+
+      userEvent.hover(version);
+
+      expect(version).toHaveStyle({
+        backgroundColor: hexToRGB(defaultTheme.palette.warning.dark),
+      });
+    });
   });
 });
 
@@ -129,7 +225,7 @@ describe('user interactions', () => {
   });
 });
 
-describe('validation', () => {
+describe('input validation', () => {
   it('accepts values in format [num].[num].[num]', async () => {
     renderWithTheme(<VersionsControl />);
     const addVersionBtn = screen.getByText(/Add version/i);
@@ -175,3 +271,10 @@ describe('validation', () => {
     }
   );
 });
+
+function hexToRGB(hex: string) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return { r, g, b };
+}
