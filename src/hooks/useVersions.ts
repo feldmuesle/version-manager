@@ -8,13 +8,16 @@ export type VersionOperator =
   | 'less_than'
   | 'less_than_or_equal';
 
+export type VersionType = 'test' | 'production';
+
 export type Version = {
   operator: VersionOperator;
   value: string;
   id: string;
+  type: VersionType;
 };
 
-export const useVersions = () => {
+export const useVersions = (type: VersionType) => {
   const [versions, setVersions] = useState<Version[]>([]);
 
   const sortVersions = (a: Version, b: Version) => {
@@ -25,6 +28,7 @@ export const useVersions = () => {
     const newVersion: Version = {
       operator,
       value,
+      type,
       id: uuidv4(),
     };
 

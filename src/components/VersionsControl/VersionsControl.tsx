@@ -78,14 +78,27 @@ const StyledErrorSection = styled('div')`
 
 export const VersionsControl: FC<VersionsControlProps> = () => {
   const [isEditSectionVisible, setIsEditSectionVisible] = useState(false);
+  const [activeVersionType, setActiveVersionType] =
+    useState<VersionType>('production');
   const [updateVersionId, setUpdateVersionId] = useState<string | undefined>();
   const [operator, setOperator] = useState(OPTIONS[0].value);
   const [versionValue, setVersionValue] = useState('');
   const [hasInputError, setHasInputError] = useState(false);
-  const { versions, submitVersion, updateVersion, deleteVersion } =
-    useVersions();
+  const {
+    versions: prodVersions,
+    submitVersion: submitProdVersion,
+    updateVersion: updateProdVersion,
+    deleteVersion: deleteProdVersion,
+  } = useVersions('production');
+  const {
+    versions: testVersions,
+    submitVersion: submitTestVersion,
+    updateVersion: updateTestVersion,
+    deleteVersion: deleteTestVersion,
+  } = useVersions('test');
 
-  const handleAddVersionClick = () => {
+  const handleAddVersionClick = (type: VersionType) => {
+    setActiveVersionType(type);
     setIsEditSectionVisible(true);
   };
 
@@ -98,7 +111,12 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     const isValid = validateInput(versionValue);
 
     if (isValid) {
+      const submitVersion =
+        activeVersionType === 'production'
+          ? submitProdVersion
+          : submitTestVersion;
       submitVersion(operator, versionValue);
+
       setIsEditSectionVisible(false);
       resetForm();
     } else {
@@ -109,6 +127,10 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   const handleUpdateVersion = () => {
     const isValid = validateInput(versionValue);
     if (isValid && updateVersionId) {
+      const updateVersion =
+        activeVersionType === 'production'
+          ? updateProdVersion
+          : updateTestVersion;
       updateVersion({
         operator,
         value: versionValue,
@@ -122,6 +144,10 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   };
 
   const handleDeleteVersion = (updateVersionId: string) => {
+    const deleteVersion =
+      activeVersionType === 'production'
+        ? deleteProdVersion
+        : deleteTestVersion;
     deleteVersion(updateVersionId);
     setIsEditSectionVisible(false);
     resetForm();
@@ -140,7 +166,9 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   };
 
   const handleVersionClick = (versionId: string) => {
-    const versionToEdit = versions.find((version) => version.id === versionId);
+    const versionToEdit =
+      prodVersions.find((version) => version.id === versionId) ??
+      testVersions.find((version) => version.id === versionId);
     if (versionToEdit) {
       setUpdateVersionId(versionId);
       setVersionValue(versionToEdit.value);
@@ -162,11 +190,13 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
     const label = OPERATOR_MAP[version.operator].length
       ? `${OPERATOR_MAP[version.operator]} ${version.value}`
       : version.value;
+    const color = version.isOverlapping ? 'warning' : version.type;
+
     return (
       <Chip
         key={version.id}
         label={label}
-        type='production'
+        color={color}
         onClick={() => handleVersionClick(version.id)}
       />
     );
@@ -194,17 +224,29 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
             />
           </StyledButtonGroup>
         ) : (
-          <Button
-            label='add version'
-            onClick={handleAddVersionClick}
-            color='primary'
-            variant='outlined'
-          />
+          <ButtonGroup>
+            <Button
+              label='add version'
+              onClick={() => handleAddVersionClick('production')}
+              color='primary'
+              variant='outlined'
+            />
+            <Button
+              label='add testversion'
+              onClick={() => handleAddVersionClick('test')}
+              color='primary'
+              variant='outlined'
+            />
+          </ButtonGroup>
         )}
-      </StyledHeader>
-      <StyledVersionsGroup>
-        {versions.length > 0 && versions.map(renderVersion)}
-      </StyledVersionsGroup>
+      <VersionsSection>
+        <SubHeading>Production</SubHeading>
+        {prodVersions.length > 0 && prodVersions.map(renderVersion)}
+      </VersionsSection>
+      <VersionsSection>
+        <SubHeading>Test</SubHeading>
+        {testVersions.length > 0 && testVersions.map(renderVersion)}
+      </VersionsSection>
       {isEditSectionVisible && (
         <div>
           <StyledEditSection>
@@ -218,7 +260,9 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
             <TextField
               name='version'
               onChange={handleChange}
-              label='Version'
+              label={
+                activeVersionType === 'production' ? 'Version' : 'Testversion'
+              }
               value={versionValue}
               error={hasInputError}
               inputProps={{
