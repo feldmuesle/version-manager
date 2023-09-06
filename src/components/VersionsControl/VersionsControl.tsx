@@ -1,13 +1,16 @@
 import React, { ChangeEventHandler, FC, useState } from 'react';
-import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
+import {
+  Version,
+  VersionOperator,
+  VersionType,
+  useVersions,
+} from '../../hooks';
+import { Styled } from './Styles';
 import { Button } from '../Button';
 import { Chip } from '../Chip';
 import { TextField } from '../TextField';
 import { Select, SelectOptionProps } from '../Select';
-import { Version, VersionOperator, useVersions } from '../../hooks';
-
-export type VersionsControlProps = {};
 
 const OPERATOR_MAP: { [key in VersionOperator]: string } = {
   equal: '',
@@ -25,7 +28,7 @@ export const OPTIONS: { value: VersionOperator; label: string }[] = [
   },
   {
     value: 'greater_than_or_equal',
-    label: 'greater then or equal to ≥',
+    label: 'greater than or equal to ≥',
   },
   {
     value: 'less_than',
@@ -37,46 +40,7 @@ export const OPTIONS: { value: VersionOperator; label: string }[] = [
   },
 ];
 
-const StyledVersionsControl = styled('div')`
-  width: 80%;
-  margin: 0 auto;
-  background-color: ${({ theme }) => theme.palette.background.default};
-  padding: ${({ theme }) => theme.spacer.ms};
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacer.ms};
-  text-align: left;
-`;
-
-const StyledHeader = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const StyledButtonGroup = styled('div')`
-  display: flex;
-  gap: ${({ theme }) => theme.spacer.xs};
-`;
-const StyledVersionsGroup = styled('div')`
-  display: flex;
-  gap: ${({ theme }) => theme.spacer.xs};
-  flex-wrap: wrap;
-`;
-
-const StyledEditSection = styled('div')`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacer.lg};
-`;
-
-const StyledErrorSection = styled('div')`
-  color: ${({ theme }) => theme.palette.text.error};
-`;
-
-export const VersionsControl: FC<VersionsControlProps> = () => {
+export const VersionsControl: FC = () => {
   const [isEditSectionVisible, setIsEditSectionVisible] = useState(false);
   const [activeVersionType, setActiveVersionType] =
     useState<VersionType>('production');
@@ -203,11 +167,11 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
   };
 
   return (
-    <StyledVersionsControl>
-      <StyledHeader>
-        <span>Versions</span>
+    <Styled.Wrapper>
+      <Styled.Header>
+        <Styled.Heading>Versions</Styled.Heading>
         {isEditSectionVisible ? (
-          <StyledButtonGroup>
+          <Styled.ButtonGroup>
             <Button
               label={updateVersionId ? 'save' : 'add'}
               onClick={
@@ -222,9 +186,9 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
               color='secondary'
               variant='outlined'
             />
-          </StyledButtonGroup>
+          </Styled.ButtonGroup>
         ) : (
-          <ButtonGroup>
+          <Styled.ButtonGroup>
             <Button
               label='add version'
               onClick={() => handleAddVersionClick('production')}
@@ -237,19 +201,20 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
               color='primary'
               variant='outlined'
             />
-          </ButtonGroup>
+          </Styled.ButtonGroup>
         )}
-      <VersionsSection>
-        <SubHeading>Production</SubHeading>
+      </Styled.Header>
+      <Styled.VersionsSection>
+        <Styled.SubHeading>Production</Styled.SubHeading>
         {prodVersions.length > 0 && prodVersions.map(renderVersion)}
-      </VersionsSection>
-      <VersionsSection>
-        <SubHeading>Test</SubHeading>
+      </Styled.VersionsSection>
+      <Styled.VersionsSection>
+        <Styled.SubHeading>Test</Styled.SubHeading>
         {testVersions.length > 0 && testVersions.map(renderVersion)}
-      </VersionsSection>
+      </Styled.VersionsSection>
       {isEditSectionVisible && (
         <div>
-          <StyledEditSection>
+          <Styled.EditSection>
             <Select
               name='operator'
               onChange={handleSelect}
@@ -277,14 +242,14 @@ export const VersionsControl: FC<VersionsControlProps> = () => {
                 color='error'
               />
             )}
-          </StyledEditSection>
+          </Styled.EditSection>
           {hasInputError && (
-            <StyledErrorSection>
+            <Styled.ErrorSection>
               Version must be formatted as [num].[num].[num]
-            </StyledErrorSection>
+            </Styled.ErrorSection>
           )}
         </div>
       )}
-    </StyledVersionsControl>
+    </Styled.Wrapper>
   );
 };
