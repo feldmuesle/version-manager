@@ -37,9 +37,9 @@ export const useVersions = (type: VersionType) => {
 
   const handleUpdateVersion = (version: Omit<Version, 'type'>) => {
     setVersions((prevVersions) => {
-      const updatedVersions = prevVersions.map((v) =>
-        v.id === version.id ? { ...version, type } : v
-      );
+      const updatedVersions = prevVersions
+        .map((v) => (v.id === version.id ? { ...version, type } : v))
+        .sort(sortVersions);
       return setIsOverlapping(updatedVersions);
     });
   };
